@@ -1,0 +1,39 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+
+# Base de données
+*.sqlite3
+*.sql
+
+# Environnement virtuel
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Fichiers de migration
+commissions/migrations/
+!commissions/migrations/__init__.py
+
+# Fichiers sensibles
+.env
+*.local
+*.secret
+
+# Projet
+staticfiles/
+static/
+media/
