@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Connexion - Système de gestion</title>
+<style>
+
+/* ===== Body avec image de fond ===== */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* IMAGE Topnet en fond */
+    background: url("https://cdn.aptoide.com/imgs/4/3/6/43642ede52994f85cfcc032384ea9f94_fgraphic.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* ===== Login Container ===== */
+.login-container {
+    background: rgba(255, 255, 255, 0.95); /* panneau semi‑opaque pour lisibilité */
+    padding: 40px 30px;
+    width: 360px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.login-container:hover {
+    transform: translateY(-5px);
+}
+
+/* ===== Titre ===== */
+.login-container h1 {
+    font-size: 2rem;
+    margin-bottom: 25px;
+    color: #333;
+    position: relative;
+}
+
+.login-container h1::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: #007bff; /* accent bleu */
+    margin: 8px auto 0;
+    border-radius: 2px;
+}
+
+/* ===== Formulaire ===== */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+
+/* ===== Bouton ===== */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #007bff; /* bleu */
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #0056b3;
+    transform: scale(1.02);
+}
+
+/* ===== Message erreur ===== */
+.error {
+    background: #ffdddd;
+    color: #d8000c;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* ===== Pied de page ===== */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: #888;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <h1>Connexion</h1>
+
+    {% if form.errors %}
+    <div class="error">
+        Nom d'utilisateur ou mot de passe incorrect
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label>Mot de passe</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <div class="footer">
+        Système de gestion des commissions
+    </div>
+
+</div>
+
+</body>
+</html>

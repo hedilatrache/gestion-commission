@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<h1 class="page-title">
+    <span class="highlight">Liste</span> des <span class="highlight-alt">Utilisateurs</span>
+</h1><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+
+
+.page-title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #3498db;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.page-title::after {
+    content: '';
+    display: block;
+    width: 140px;
+    height: 4px;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    margin: 12px auto 0;
+    border-radius: 2px;
+}
+
+.page-title:hover {
+    color: #3498db;
+    transform: scale(1.05);
+}
+
+.page-title .highlight {
+    color: #3498db; /* bleu */
+}
+
+.page-title .highlight-alt {
+    color: #3498db; /* vert */
+}
+
+body { font-family:'Segoe UI', sans-serif; background:#f4f6f9; margin:0; padding:40px 20px; color:#333; }
+.container { max-width:1200px; margin:auto; }
+.page-title { text-align:center; font-size:2.8rem; font-weight:700; color:#3498db; margin-bottom:40px; position:relative; letter-spacing:1px; }
+.page-title::after { content:''; display:block; width:120px; height:4px; background:linear-gradient(90deg,#3498db,#2ecc71); margin:10px auto 0; border-radius:2px; }
+.top-bar { display:flex; justify-content:space-between; align-items:center; gap:15px; margin-bottom:30px; }
+.btn-circle { width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; color:#fff; text-decoration:none; box-shadow:0 4px 10px rgba(0,0,0,0.15); }
+.btn-add { background:#28a745; } .btn-add:hover { background:#218838; transform:scale(1.1); }
+.btn-logout { background:#dc3545; } .btn-logout:hover { background:#c82333; transform:scale(1.1); }
+.search-form { display:flex; align-items:center; gap:5px; flex-grow:1; max-width:500px; }
+.search-form input, .search-form select { padding:8px 12px; border-radius:6px; border:1px solid #ccc; outline:none; }
+.search-form button { padding:8px 12px; border:none; border-radius:6px; background:#3498db; color:#fff; cursor:pointer; }
+.search-form button:hover { background:#2980b9; }
+.cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
+.card { background:#fff; border-radius:15px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column; gap:12px; transition:transform 0.25s,box-shadow 0.25s; }
+.card:hover { transform:translateY(-6px); box-shadow:0 15px 30px rgba(0,0,0,0.15); }
+.avatar { width:50px; height:50px; background:#007bff; color:#fff; font-weight:bold; font-size:1.2rem; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:10px; }
+.card h2 { font-size:1.2rem; margin:0; color:#343a40; }
+.card p { margin:2px 0; font-size:0.95rem; color:#555; }
+.badge { display:inline-block; padding:3px 10px; font-size:0.75rem; font-weight:600; border-radius:12px; margin-top:5px; margin-right:5px; color:#fff; }
+.badge-admin { background:#e67e22; }
+.badge-superadmin { background:#d35400; }
+.badge-user { background:#3498db; }
+.badge-moderator { background:#8e44ad; }
+.badge-guest { background:#95a5a6; }
+.badge-none { background:#6c757d; }
+.actions { margin-top:auto; display:flex; justify-content:flex-end; gap:8px; }
+.actions a { text-decoration:none; color:#fff; font-size:0.9rem; padding:6px 10px; border-radius:6px; display:flex; align-items:center; gap:5px; transition:0.3s; }
+.actions .edit { background:#007bff; } .actions .edit:hover { background:#0069d9; }
+.actions .delete { background:#dc3545; } .actions .delete:hover { background:#c82333; }
+.pagination { display:flex; justify-content:center; margin:30px 0; gap:8px; flex-wrap:wrap; }
+.pagination a, .pagination span { padding:6px 12px; border-radius:6px; text-decoration:none; color:#fff; background:#3498db; }
+.pagination a:hover { background:#2980b9; }
+.pagination .current { background:#2c3e50; }
+.empty { text-align:center; padding:50px 0; color:#888; font-style:italic; font-size:1.1rem; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="top-bar">
+    <a href="{% url 'utilisateur_add' %}" class="btn-circle btn-add" title="Ajouter utilisateur"><i class="fa fa-plus"></i></a>
+     <!-- Bouton Import Excel -->
+    <a href="{% url 'utilisateurs_import_excel' %}" class="btn-circle btn-add" title="Importer depuis Excel" style="background:#17a2b8;">
+        <i class="fa fa-file-excel"></i>
+    </a>
+
+
+    <form method="get" class="search-form">
+        <input type="text" name="search" placeholder="Rechercher..." value="{{ search_query }}">
+        <select name="role">
+            <option value="">Tous les rôles</option>
+            {% for role in roles %}
+                <option value="{{ role.nom }}" {% if role_filter == role.nom %}selected{% endif %}>{{ role.nom }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-circle btn-logout" title="Déconnexion"><i class="fa fa-right-from-bracket"></i></button>
+    </form>
+</div>
+
+{% if utilisateurs %}
+<div class="cards">
+    {% for u in utilisateurs %}
+    <div class="card">
+        <div class="avatar">{{ u.nom|slice:":1" }}{{ u.prenom|slice:":1" }}</div>
+        <h2>{{ u.nom }} {{ u.prenom }}</h2>
+        <p><strong>Email:</strong> {{ u.email }}</p>
+        <p><strong>Username:</strong> {{ u.username }}</p>
+        <p><strong>Rôles:</strong>
+            {% if u.roles.exists %}
+                {% for role in u.roles.all %}
+                    {% if role.nom == "Admin" %}
+                        <span class="badge badge-admin">{{ role.nom }}</span>
+                    {% elif role.nom == "SuperAdmin" %}
+                        <span class="badge badge-superadmin">{{ role.nom }}</span>
+                    {% elif role.nom == "Admin_vente" %}
+                        <span class="badge badge-moderator">{{ role.nom }}</span>
+                    {% elif role.nom in "Chef_zone Direction" %}
+                        <span class="badge badge-guest">{{ role.nom }}</span>
+                    {% else %}
+                        <span class="badge badge-user">{{ role.nom }}</span>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% if u.is_superuser %}
+                    <span class="badge badge-superadmin">Super Admin</span>
+                {% elif u.is_staff %}
+                    <span class="badge badge-admin">Admin</span>
+                {% else %}
+                    <span class="badge badge-none">Utilisateur</span>
+                {% endif %}
+            {% endif %}
+        </p>
+        <div class="actions">
+            <a href="{% url 'utilisateur_edit' u.pk %}" class="edit"><i class="fa fa-pen"></i></a>
+            <a href="{% url 'utilisateur_delete' u.pk %}" class="delete"><i class="fa fa-trash"></i></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if utilisateurs.has_other_pages %}
+<div class="pagination">
+    {% if utilisateurs.has_previous %}
+        <a href="?page={{ utilisateurs.previous_page_number }}&search={{ search_query }}&role={{ role_filter }}">&laquo; Précédent</a>
+    {% endif %}
+    {% for num in utilisateurs.paginator.page_range %}
+        {% if utilisateurs.number == num %}
+            <span class="current">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}&search={{ search_query }}&role={{ role_filter }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if utilisateurs.has_next %}
+        <a href="?page={{ utilisateurs.next_page_number }}&search={{ search_query }}&role={{ role_filter }}">Suivant &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="empty">Aucun utilisateur trouvé</div>
+{% endif %}
+
+</div>
+</body>
+</html>

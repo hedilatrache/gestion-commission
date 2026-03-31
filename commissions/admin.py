@@ -3,10 +3,14 @@ from .models import *
 
 @admin.register(Utilisateur)
 class UtilisateurAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'nom', 'prenom', 'is_active', 'date_creation']
-    list_filter = ['is_active', 'date_creation']
+    list_display = ['username', 'email', 'nom', 'prenom', 'is_active', 'date_creation', 'get_roles']
+    list_filter = ['is_active', 'date_creation', 'roles']
     search_fields = ['username', 'email', 'nom', 'prenom']
-    # Pas de filter_horizontal pour 'roles' car c'est un ManyToMany avec through
+
+    # Méthode pour afficher les rôles ManyToMany dans list_display
+    def get_roles(self, obj):
+        return ", ".join([role.nom for role in obj.roles.all()])
+    get_roles.short_description = 'Rôles'  # Nom de la colonne dans l'admin
 
 
 @admin.register(Role)
@@ -17,19 +21,6 @@ class RoleAdmin(admin.ModelAdmin):
     # 🔥 CORRECTION : Supprimer filter_horizontal pour 'permissions' car c'est aussi un ManyToMany avec through
     # filter_horizontal = ['permissions']  ← À supprimer
 
-
-@admin.register(Permission)
-class PermissionAdmin(admin.ModelAdmin):
-    list_display = ['nom']
-    search_fields = ['nom']
-
-
-@admin.register(RolePermission)
-class RolePermissionAdmin(admin.ModelAdmin):
-    list_display = ['role', 'permission', 'utilisateur', 'date_attribution']
-    list_filter = ['date_attribution', 'role', 'permission']
-    search_fields = ['role__nom', 'permission__nom', 'utilisateur__username']
-    raw_id_fields = ['role', 'permission', 'utilisateur']  # Alternative plus légère
 
 
 @admin.register(TypeCommission)
